@@ -26,7 +26,7 @@ public class myTestCases {
 		driver.manage().window().maximize();
 	}
 
-	@Test(priority = 1, enabled = true)
+	@Test(priority = 1, enabled = false)
 	public void SignUP() throws InterruptedException {
 		driver.navigate().to(SignUp);
 
@@ -110,7 +110,7 @@ public class myTestCases {
 
 	}
 
-	@Test(priority = 2, enabled = true)
+	@Test(priority = 2, enabled = false)
 	public void Logout() throws InterruptedException {
 		WebElement LogoutButton = driver.findElement(By.linkText("Logoff"));
 		LogoutButton.click();
@@ -120,7 +120,7 @@ public class myTestCases {
 
 	}
 
-	@Test(priority = 3, enabled = true)
+	@Test(priority = 3, enabled = false)
 	public void Login() {
 		WebElement LoginAndRegisterButton = driver.findElement(By.partialLinkText("Login or"));
 		LoginAndRegisterButton.click();
@@ -133,26 +133,53 @@ public class myTestCases {
 
 	}
 
-	@Test(priority = 4,invocationCount=1)
+	@Test(priority = 4, invocationCount = 1)
 	public void AddToCart() throws InterruptedException {
 		driver.navigate().to(theURL);
 		Thread.sleep(1000);
-	//	WebElement theItemsContainer = driver.findElement(By.cssSelector("section[id='latest'] div[class='container-fluid']"));
-	//	int numberOfItems = theItemsContainer.findElement(By.cssSelector(".thumbnails.list-inline")).findElements(By.tagName("div")).size();
-	//	System.out.println(numberOfItems);
-		
+		// WebElement theItemsContainer =
+		// driver.findElement(By.cssSelector("section[id='latest']
+		// div[class='container-fluid']"));
+		// int numberOfItems =
+		// theItemsContainer.findElement(By.cssSelector(".thumbnails.list-inline")).findElements(By.tagName("div")).size();
+		// System.out.println(numberOfItems);
+
 		List<WebElement> theListOfItems = driver.findElements(By.className("prdocutname"));
-		
-		int TotalNumberOfItems =theListOfItems.size();
+
+		int TotalNumberOfItems = theListOfItems.size();
 		System.out.println(TotalNumberOfItems);
-		int RandomItemIndex = rand.nextInt(2);
+		int RandomItemIndex = rand.nextInt(theListOfItems.size());
 		theListOfItems.get(RandomItemIndex).click();
 		Thread.sleep(3000);
-		if(driver.getPageSource().contains("Out of Stock")) {driver.navigate().back();
-		System.out.println("sorry the item out of the stock");
-	    }else {
-		System.out.println("the item is available");}
-		
-	} 
+		if (driver.getPageSource().contains("Out of Stock")) {
+			driver.navigate().back();
+			System.out.println("sorry the item out of the stock");
+		} else {
 
+			System.out.println("the item is available");
+		}
+
+		Thread.sleep(1000);
+		int randomQty = rand.nextInt(4) + 2;
+		WebElement qtyInput = driver.findElement(By.name("quantity"));
+		qtyInput.clear();
+		qtyInput.sendKeys(String.valueOf(randomQty));
+		System.out.println("Quantity chosen" + randomQty);
+
+		WebElement Cart = driver.findElement(By.className("cart"));
+		Cart.click();
+		Thread.sleep(1500);
+
+		WebElement CheckOutCart = driver
+				.findElement(By.cssSelector("a[href*='checkout/cart'], " + "a[href*='basket']"));
+		CheckOutCart.click();
+		Thread.sleep(1500);
+
+		WebElement totalPrice = driver.findElement(By.cssSelector("span[class='bold totalamout']"));
+
+		if (totalPrice.isDisplayed()) {
+			System.out.println("Cart total shown" + totalPrice.getText());
+
+		}
+	}
 }
